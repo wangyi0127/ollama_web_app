@@ -1,0 +1,2 @@
+# ollama_web_app
+一个基于Ollama本地部署的AI模型编写的WEB应用程序
