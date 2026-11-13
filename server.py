@@ -341,7 +341,10 @@ class OllamaOpenAIHandler(
                 stream=True,
             )
         except OpenAIError as exc:
-            self._send_json(502, {"error": f"OpenAI SDK 调用 Ollama 失败：{exc}"})
+            self._send_json(
+                502,
+                {"error": f"OpenAI SDK 调用 Ollama 失败：{self._format_openai_error(exc)}"},
+            )
             return
 
         self.send_response(200)
@@ -365,7 +368,7 @@ class OllamaOpenAIHandler(
         except (BrokenPipeError, ConnectionResetError):
             client_disconnected = True
         except OpenAIError as exc:
-            stream_error = f"读取模型回复失败：{exc}"
+            stream_error = f"读取模型回复失败：{self._format_openai_error(exc)}"
         finally:
             close = getattr(stream, "close", None)
             if close is not None:
@@ -415,6 +418,18 @@ class OllamaOpenAIHandler(
             for capability in payload["capabilities"]
             if isinstance(capability, str)
         }
+
+    @staticmethod
+    def _format_openai_error(exc):
+        response = getattr(exc, "response", None)
+        if response is not None:
+            status_code = getattr(response, "status_code", None)
+            detail = getattr(response, "text", "").strip()
+            if detail:
+                if status_code is not None:
+                    return f"HTTP {status_code}: {detail[:2000]}"
+                return detail[:2000]
+        return str(exc)
 
     def _get_models(self):
         try:

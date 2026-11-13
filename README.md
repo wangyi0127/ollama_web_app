@@ -14,6 +14,8 @@ python run.py
 python -m pip install -r requirements.txt
 ```
 
+网页应用通过 Ollama HTTP API 工作，不需要在本机安装 PyTorch 或 CUDA。
+
 ## 模块
 
 - `main.py`、`__main__.py`：命令行参数和服务启动。

@@ -35,7 +35,7 @@ def main():
         base_url=f"{OllamaOpenAIHandler.ollama_url}/v1",
         api_key="ollama",
         timeout=300,
-        max_retries=0,
+        max_retries=2,
     )
 
     try:
