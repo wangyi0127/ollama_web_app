@@ -1,2 +1,7 @@
+# Python runtime dependencies used directly by the web app.
 openai==3.23.0
 pypdf==7.0.0
+
+# External service (install and update separately; not managed by pip):
+# Ollama 0.40.16 (version detected on this machine)
+# Default API URL: http://127.0.0.1:11434
