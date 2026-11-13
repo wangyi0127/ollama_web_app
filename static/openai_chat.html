@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eaf3f6">
+  <title>本地模型工作台</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <section class="auth-screen" id="authScreen" aria-labelledby="authTitle" hidden>
+    <div class="auth-panel">
+      <div class="auth-topbar">
+        <div class="auth-mark" aria-hidden="true">↗</div>
+        <button class="theme-toggle" id="authThemeToggle" type="button" aria-label="切换到深色主题" aria-pressed="false">☾ 深色模式</button>
+      </div>
+      <p class="auth-kicker">LOCAL INFERENCE / ACCOUNT</p>
+      <h1 id="authTitle">登录本地工作台</h1>
+      <p class="auth-description">登录后查看与账号关联的聊天记录。</p>
+      <form class="auth-form" id="authForm">
+        <label class="auth-field" for="authUsername">用户名
+          <input class="auth-input" id="authUsername" name="username" type="text" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9_.\x2d]{3,32}" required>
+        </label>
+        <label class="auth-field" for="authPassword">密码
+          <input class="auth-input" id="authPassword" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required>
+        </label>
+        <div class="error-banner" id="authError" role="alert" hidden></div>
+        <button class="auth-submit" id="authSubmit" type="submit">登录</button>
+      </form>
+      <button class="auth-switch" id="authSwitch" type="button">没有账号？注册新账号</button>
+    </div>
+  </section>
+
+  <div class="shell" id="appShell" hidden>
+    <aside class="rail" aria-label="模型与聊天历史">
+      <div class="rail-heading">
+        <div>
+          <p class="brand-kicker">LOCAL INFERENCE / 01</p>
+          <p class="brand-title">本地<span>对话</span></p>
+        </div>
+        <button class="new-chat-button" id="newChat" type="button" title="新建聊天窗口">
+          <span aria-hidden="true">＋</span> 新对话
+        </button>
+      </div>
+      <div class="rail-rule"></div>
+      <div class="model-section">
+        <p class="section-kicker">AVAILABLE MODELS</p>
+        <div class="model-list" id="modelList" aria-live="polite">
+          <div class="model-item"><strong>正在读取模型…</strong><span>连接 Ollama</span></div>
+        </div>
+      </div>
+      <section class="history-section" aria-label="历史聊天窗口">
+        <div class="history-heading">
+          <p class="section-kicker">CHAT HISTORY</p>
+          <span class="history-count" id="historyCount">0</span>
+        </div>
+        <div class="history-list" id="historyList" aria-live="polite">
+          <p class="history-empty">正在读取历史…</p>
+        </div>
+      </section>
+      <div class="rail-bottom"></div>
+      <div class="account-bar">
+        <span>当前账号 <span class="account-name" id="currentUsername"></span></span>
+        <button class="logout-button" id="logoutButton" type="button">退出</button>
+      </div>
+      <div class="rail-status" role="status"><span class="status-dot" id="statusDot"></span><span id="statusText">正在连接 Ollama…</span></div>
+      <p class="footer-note">OLLAMA · 127.0.0.1:11434</p>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="section-kicker">PRIVATE SESSION</p>
+          <h1>模型工作台</h1>
+        </div>
+        <div class="top-actions">
+          <label class="select-wrap">
+            <select class="model-select" id="modelSelect" aria-label="选择模型" disabled><option>正在读取模型…</option></select>
+          </label>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换到深色主题" aria-pressed="false">☾ 深色模式</button>
+        </div>
+      </header>
+
+      <section class="conversation" aria-label="聊天对话">
+        <div class="error-banner" id="serviceError" role="alert" hidden></div>
+        <div class="messages" id="messages" aria-live="polite" aria-relevant="additions text">
+          <section class="welcome" id="welcome">
+            <div class="welcome-mark" aria-hidden="true">↗</div>
+            <p class="section-kicker">YOUR MACHINE. YOUR MODEL.</p>
+            <h2>把想法交给<br><em>本地模型。</em></h2>
+            <p>从一个问题开始，逐步展开你的思路。</p>
+            <div class="suggestions">
+              <button class="suggestion" type="button" data-prompt="用三句话介绍一下你自己。">介绍一下自己</button>
+              <button class="suggestion" type="button" data-prompt="给我一个清晰的周末学习计划。">整理一份学习计划</button>
+              <button class="suggestion" type="button" data-prompt="用 Python 写一个读取 JSON 文件的小函数。">写一段 Python 代码</button>
+            </div>
+          </section>
+        </div>
+        <div class="composer-wrap">
+          <div class="error-banner" id="sendError" role="alert" hidden></div>
+          <div class="composer">
+            <input id="attachmentInput" type="file" accept="image/png,image/jpeg,image/webp,.txt,.pdf,.docx,.pptx,.xlsx" multiple hidden>
+            <form class="composer-input" id="chatForm">
+              <div class="attachment-toolbar">
+                <button class="attachment-button" id="attachmentButton" type="button" title="上传附件" aria-label="上传附件" hidden>＋</button>
+                <div class="attachment-list" id="attachmentList" aria-live="polite" hidden></div>
+              </div>
+              <div class="prompt-row">
+                <textarea class="prompt" id="promptInput" rows="5" placeholder="给本地模型发一条消息…" aria-label="消息内容"></textarea>
+                <button class="send-button" id="sendButton" type="submit" title="发送消息" aria-label="发送消息" disabled>↑</button>
+              </div>
+            </form>
+          </div>
+          <p class="hint">Enter 发送 · Shift + Enter 换行 · 支持图片、TXT、PDF、DOCX、XLSX、PPTX（最多 5 个，单个 10 MB、合计 20 MB）</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

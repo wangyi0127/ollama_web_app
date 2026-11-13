@@ -1,0 +1,7 @@
+accelerate==1.11.0
+modelscope==1.40.1
+openai==3.23.0
+pypdf==7.0.0
+safetensors==0.8.0
+torch==2.14.1+cu126
+transformers==5.8.0
